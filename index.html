@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FreshHaven Grocery - Farm-Fresh Express Delivery</title>
+  <meta name="description" content="Order farm-fresh organic produce, dairy, bakery, beverages, and daily household staples delivered in 30 minutes.">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Top Announcement Bar -->
+  <div class="top-announcement">
+    <span>⚡ Farm-Fresh Grocery Express: Free Delivery on orders over ₹499 | 30-Minute Guarantee</span>
+  </div>
+
+  <!-- Sticky Main Header -->
+  <header class="main-header">
+    <div class="header-container">
+      <!-- Store Brand Logo -->
+      <div class="brand-logo" id="logoBtn">
+        <div class="brand-icon-wrapper">
+          <i data-lucide="shopping-bag"></i>
+        </div>
+        <div>
+          <span style="color: #047857;">Fresh</span>Haven
+          <span style="font-size: 0.65rem; display: block; font-weight: 600; color: #64748b; margin-top: -4px;">
+            GROCERY & MARKET
+          </span>
+        </div>
+      </div>
+
+      <!-- Location Pin Checker Button -->
+      <button class="location-btn" id="openLocationModalBtn">
+        <i data-lucide="map-pin" style="color: #10b981;"></i>
+        <div style="text-align: left; line-height: 1.1;">
+          <div style="font-size: 0.7rem; color: #64748b;">Deliver to:</div>
+          <div id="currentLocationText" style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap; max-width: 140px; font-weight: 700;">
+            560001 - Bengaluru
+          </div>
+        </div>
+      </button>
+
+      <!-- Live Search Bar -->
+      <div class="search-container">
+        <div class="search-input-wrapper">
+          <i data-lucide="search" class="search-icon"></i>
+          <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Search fresh veggies, milk, paneer, organic items..."
+          >
+        </div>
+        <div id="searchResultsDropdown" class="search-results-dropdown hidden"></div>
+      </div>
+
+      <!-- Header Action Controls -->
+      <div class="header-actions">
+        <!-- Storefront vs Admin Mode Toggle -->
+        <div class="view-mode-toggle">
+          <button id="storeViewBtn" class="active">Store</button>
+          <button id="adminViewBtn">Admin</button>
+        </div>
+
+        <!-- User Profile Button -->
+        <button class="location-btn" id="openAuthModalBtn" style="background-color: #ffffff; border-color: #e2e8f0; color: #0f172a;">
+          <i data-lucide="user" style="color: #059669;"></i>
+          <span id="userNameHeader">Alex</span>
+        </button>
+
+        <!-- Cart Button -->
+        <button class="cart-icon-btn" id="openCartBtn">
+          <i data-lucide="shopping-cart"></i>
+          <span>Cart</span>
+          <span class="cart-badge" id="cartBadgeCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CUSTOMER STOREFRONT VIEW -->
+  <main id="customerView">
+    <!-- Hero Banner -->
+    <div class="hero-banner">
+      <div class="hero-content">
+        <div class="hero-badge">
+          ✨ Farm-Fresh Harvest Guarantee
+        </div>
+        <h1 class="hero-title">
+          100% Farm-Fresh Groceries Delivered to Your Doorstep
+        </h1>
+        <p class="hero-subtitle">
+          Hand-picked organic produce, dairy, bakery & daily household staples delivered in as fast as 30 minutes.
+        </p>
+
+        <div class="hero-stats">
+          <div class="hero-stat-item">
+            <div class="hero-stat-val">30 Mins</div>
+            <div class="hero-stat-lbl">⚡ Express Delivery</div>
+          </div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-val">100%</div>
+            <div class="hero-stat-lbl">🌿 Organic Certified</div>
+          </div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-val">4.9 ★</div>
+            <div class="hero-stat-lbl">10,000+ Happy Locals</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Chips Bar -->
+    <div class="categories-scroll" id="categoriesBar">
+      <!-- Category chips injected by JS -->
+    </div>
+
+    <!-- Smart Filters Bar -->
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span style="font-size: 0.85rem; font-weight: 700; color: #0f172a; margin-right: 8px;">
+          Filter By:
+        </span>
+        <button class="filter-pill" id="organicToggleBtn">
+          🌿 Organic Only
+        </button>
+        <button class="filter-pill" id="dietGlutenFreeBtn">Gluten-Free</button>
+        <button class="filter-pill" id="dietVeganBtn">Vegan</button>
+        <button class="filter-pill" id="dietDairyFreeBtn">Dairy-Free</button>
+        <button class="filter-pill" id="dietSugarFreeBtn">Sugar-Free</button>
+        <button id="clearFiltersBtn" style="font-size: 0.75rem; font-weight: 700; color: #ef4444; text-decoration: underline; display: none;">
+          Clear All
+        </button>
+      </div>
+
+      <!-- Sort Select -->
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 0.8rem; font-weight: 600; color: #64748b;">Sort By:</span>
+        <select class="sort-select" id="sortSelect">
+          <option value="featured">Featured / Best Sellers</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+          <option value="rating">Highest Rated</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Product Grid Section -->
+    <section class="products-section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title" id="catalogTitle">All Grocery Products</h2>
+          <div style="font-size: 0.85rem; color: #64748b; margin-top: 2px;">
+            Showing fresh items available for express delivery to <strong id="catalogPincodeText">560001</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Cards Grid -->
+      <div class="product-grid" id="productGrid">
+        <!-- Products injected by JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- STORE OWNER ADMIN DASHBOARD VIEW -->
+  <main id="adminView" class="hidden">
+    <div class="admin-container">
+      <div class="admin-header">
+        <div>
+          <h1 style="font-family: 'Outfit', sans-serif; font-size: 1.8rem; font-weight: 800; color: #0f172a;">
+            Store Owner Admin Panel
+          </h1>
+          <p style="color: #64748b; font-size: 0.9rem;">
+            Real-time control center for inventory management, stock levels & incoming customer orders
+          </p>
+        </div>
+        <button class="checkout-btn" id="openAddProductModalBtn" style="width: auto;">
+          + Add New Product
+        </button>
+      </div>
+
+      <!-- Analytics Cards -->
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon" style="background: #ecfdf5; color: #10b981;">💰</div>
+          <div>
+            <div class="metric-val" id="metricRevenue">₹0</div>
+            <div class="metric-lbl">Total Store Revenue</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon" style="background: #eff6ff; color: #3b82f6;">📦</div>
+          <div>
+            <div class="metric-val" id="metricActiveOrders">0</div>
+            <div class="metric-lbl">Active Pending Orders</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon" style="background: #fef3c7; color: #f59e0b;">⚠️</div>
+          <div>
+            <div class="metric-val" id="metricLowStock">0</div>
+            <div class="metric-lbl">Low Stock Alerts (≤ 10)</div>
+          </div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon" style="background: #f3e8ff; color: #a855f7;">🥗</div>
+          <div>
+            <div class="metric-val" id="metricTotalProducts">0</div>
+            <div class="metric-lbl">Total Active Products</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Tab Selector -->
+      <div class="admin-tabs">
+        <button class="admin-tab-btn active" id="inventoryTabBtn">Product Inventory</button>
+        <button class="admin-tab-btn" id="ordersTabBtn">Customer Orders Queue</button>
+      </div>
+
+      <!-- Admin Table Search Filter -->
+      <div style="margin-bottom: 16px; position: relative; max-width: 400px;">
+        <input 
+          type="text" 
+          id="adminSearchInput" 
+          class="search-input" 
+          style="padding-left: 16px;" 
+          placeholder="Filter inventory or orders..."
+        >
+      </div>
+
+      <!-- Tab 1: Product Inventory Table -->
+      <div class="table-wrapper" id="inventoryTableWrapper">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Category</th>
+              <th>Price (₹)</th>
+              <th>Stock Level</th>
+              <th>Organic</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="inventoryTableBody">
+            <!-- Injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Tab 2: Orders Queue Table -->
+      <div class="table-wrapper hidden" id="ordersTableWrapper">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer Details</th>
+              <th>Items & Total</th>
+              <th>Time Slot</th>
+              <th>Current Status</th>
+              <th>Update Status</th>
+            </tr>
+          </thead>
+          <tbody id="ordersTableBody">
+            <!-- Injected by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- CART DRAWER -->
+  <div class="cart-drawer-overlay hidden" id="cartDrawerOverlay">
+    <div class="cart-drawer">
+      <div class="cart-drawer-header">
+        <div class="cart-drawer-title">
+          <i data-lucide="shopping-bag" style="color: #10b981;"></i>
+          <span>Your Grocery Basket</span>
+        </div>
+        <button class="close-btn" id="closeCartBtn">✕</button>
+      </div>
+
+      <!-- Free Delivery Bar -->
+      <div class="cart-free-delivery-bar" id="freeDeliveryBar">
+        Add more items to get <strong>FREE Express Delivery</strong> over ₹499!
+        <div class="cart-progress-track">
+          <div class="cart-progress-fill" id="deliveryProgressFill" style="width: 0%;"></div>
+        </div>
+      </div>
+
+      <!-- Items List -->
+      <div class="cart-items-list" id="cartItemsList">
+        <!-- Injected by JS -->
+      </div>
+
+      <!-- Footer -->
+      <div class="cart-drawer-footer" id="cartFooter">
+        <form id="couponForm" class="coupon-row">
+          <input type="text" id="couponInput" class="coupon-input" placeholder="Promo Code (Try FRESH20)">
+          <button type="submit" class="apply-btn">Apply</button>
+        </form>
+        <div id="couponMsg" style="font-size: 0.75rem; margin-bottom: 8px;"></div>
+
+        <div class="summary-line">
+          <span>Subtotal</span>
+          <span id="cartSubtotalText">₹0</span>
+        </div>
+        <div class="summary-line hidden" id="discountLine" style="color: #059669; font-weight: 700;">
+          <span>Discount (20% OFF)</span>
+          <span id="cartDiscountText">-₹0</span>
+        </div>
+        <div class="summary-line">
+          <span>Delivery Fee</span>
+          <span id="cartDeliveryFeeText">₹49</span>
+        </div>
+        <div class="summary-line">
+          <span>Estimated GST (5%)</span>
+          <span id="cartTaxText">₹0</span>
+        </div>
+
+        <div class="summary-line total">
+          <span>Total Amount</span>
+          <span id="cartGrandTotalText" style="color: #047857;">₹0</span>
+        </div>
+
+        <button class="checkout-btn" id="proceedCheckoutBtn">
+          Proceed to Checkout ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOCATION & PIN-POINTER MODAL -->
+  <div class="modal-overlay hidden" id="locationModalOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Delivery Availability & Pin Pointer</div>
+        <button class="close-btn" id="closeLocationModalBtn">✕</button>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 16px; background: #f1f5f9; padding: 4px; border-radius: 10px;">
+        <button id="pincodeTabBtn" style="flex:1; padding: 8px; border-radius: 8px; font-weight: 700; background: white;">
+          Pincode Check
+        </button>
+        <button id="mapTabBtn" style="flex:1; padding: 8px; border-radius: 8px; font-weight: 700;">
+          Map Pin-Pointer
+        </button>
+      </div>
+
+      <div id="pincodeView">
+        <form id="checkPincodeForm" style="display: flex; gap: 10px; margin-bottom: 16px;">
+          <input 
+            type="text" 
+            id="pincodeInput" 
+            class="search-input" 
+            style="padding-left: 14px;" 
+            placeholder="Enter Postal Pincode (e.g. 560001, 302001, 110001, 400001)" 
+            value="560001"
+          >
+          <button type="submit" class="checkout-btn" style="width: auto; margin: 0; padding: 8px 18px;">Check</button>
+        </form>
+        <button id="gpsBtn" style="font-size: 0.85rem; font-weight: 700; color: #059669; margin-bottom: 16px; display: block;">
+          📍 Detect My GPS Location
+        </button>
+      </div>
+
+      <div id="mapView" class="hidden">
+        <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 8px;">Tap anywhere on map to position delivery pin:</div>
+        <div class="map-simulator-box" id="mapSimBox" style="cursor: crosshair;">
+          <div class="map-pin-pulse" id="mapPinPulse" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -100%);">
+            📍
+          </div>
+        </div>
+      </div>
+
+      <div id="locationStatusCard" style="padding: 14px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; color: #065f46;">
+        <div style="font-weight: 800;" id="locStatusTitle">Delivery Available in Bengaluru!</div>
+        <div style="font-size: 0.8rem; margin-top: 4px;" id="locStatusDesc">⚡ Express 30-min delivery window open.</div>
+      </div>
+
+      <div style="margin-top: 20px;">
+        <button class="checkout-btn" id="confirmLocationBtn">Confirm Delivery Location</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MULTI-STEP CHECKOUT MODAL -->
+  <div class="modal-overlay hidden" id="checkoutModalOverlay">
+    <div class="modal-box" style="max-width: 600px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Secure Checkout</div>
+          <div style="font-size: 0.8rem; color: #64748b;" id="checkoutStepSubtitle">Step 1 of 3 • Delivery Address</div>
+        </div>
+        <button class="close-btn" id="closeCheckoutBtn">✕</button>
+      </div>
+
+      <!-- Step 1: Address Form -->
+      <div id="checkoutStep1">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Full Name</label>
+            <input type="text" id="chkName" class="search-input" style="border-radius: 8px; padding-left: 12px;" value="Alex Sharma">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Mobile Number</label>
+            <input type="text" id="chkPhone" class="search-input" style="border-radius: 8px; padding-left: 12px;" value="+91 98765 43210">
+          </div>
+          <div style="grid-column: span 2;">
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Email Address</label>
+            <input type="email" id="chkEmail" class="search-input" style="border-radius: 8px; padding-left: 12px;" value="alex.sharma@example.com">
+          </div>
+          <div style="grid-column: span 2;">
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Street Address / Colony</label>
+            <input type="text" id="chkStreet" class="search-input" style="border-radius: 8px; padding-left: 12px;" value="MG Road, Indiranagar">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Flat / House No.</label>
+            <input type="text" id="chkApt" class="search-input" style="border-radius: 8px; padding-left: 12px;" value="Flat 402, Green Acres">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Pincode</label>
+            <input type="text" id="chkZip" class="search-input" style="border-radius: 8px; padding-left: 12px;" value="560001">
+          </div>
+        </div>
+
+        <button class="checkout-btn" id="chkNextToSlotBtn" style="margin-top: 20px;">Continue to Delivery Schedule ➔</button>
+      </div>
+
+      <!-- Step 2: Time-Slot Picker -->
+      <div id="checkoutStep2" class="hidden">
+        <div style="font-weight: 800; font-size: 0.95rem; margin-bottom: 12px;">Select Delivery Window</div>
+        <div style="display: flex; flex-direction: column; gap: 10px;" id="timeSlotOptions">
+          <!-- Time slots injected by JS -->
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button style="padding: 12px 20px; background: #f1f5f9; border-radius: 10px; font-weight: 700;" id="chkBackToStep1">Back</button>
+          <button class="checkout-btn" style="flex:1; margin:0;" id="chkNextToPaymentBtn">Continue to Payment ➔</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Payment Options -->
+      <div id="checkoutStep3" class="hidden">
+        <div style="font-weight: 800; font-size: 0.95rem; margin-bottom: 12px;">Payment Method</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin-bottom: 16px;">
+          <button id="payUpiBtn" type="button" style="padding: 10px 4px; border-radius: 10px; border: 2px solid #10b981; background: #ecfdf5; font-weight: 700; font-size: 0.8rem; cursor: pointer;">
+            📲 UPI / QR
+          </button>
+          <button id="payDebitBtn" type="button" style="padding: 10px 4px; border-radius: 10px; border: 1px solid #e2e8f0; background: #ffffff; font-weight: 700; font-size: 0.8rem; cursor: pointer;">
+            💳 Debit
+          </button>
+          <button id="payCreditBtn" type="button" style="padding: 10px 4px; border-radius: 10px; border: 1px solid #e2e8f0; background: #ffffff; font-weight: 700; font-size: 0.8rem; cursor: pointer;">
+            💳 Credit
+          </button>
+          <button id="payCodBtn" type="button" style="padding: 10px 4px; border-radius: 10px; border: 1px solid #e2e8f0; background: #ffffff; font-weight: 700; font-size: 0.8rem; cursor: pointer;">
+            💵 Cash
+          </button>
+        </div>
+
+        <!-- UPI Form -->
+        <div id="upiForm" style="background: #f8fafc; padding: 14px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+          <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Quick App Select</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; margin: 6px 0 10px 0;">
+            <button id="payAppGpay" type="button" style="padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.75rem; font-weight: 700; cursor: pointer;">⚡ GPay</button>
+            <button id="payAppPhonepe" type="button" style="padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🟣 PhonePe</button>
+            <button id="payAppPaytm" type="button" style="padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🔷 Paytm</button>
+            <button id="payAppBhim" type="button" style="padding: 6px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; font-size: 0.75rem; font-weight: 700; cursor: pointer;">🇮🇳 BHIM</button>
+          </div>
+
+          <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Virtual Payment ID (UPI VPA)</label>
+          <input type="text" id="upiInput" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px; background: white;" value="alex@okaxis" placeholder="user@okaxis or user@ybl">
+          <div style="font-size: 0.75rem; color: #059669; font-weight: 600; margin-top: 6px;">✓ Instant 1-tap payment verification for UPI mobile apps</div>
+        </div>
+
+        <!-- Card Form (Debit / Credit) -->
+        <div id="cardForm" class="hidden" style="background: #f8fafc; padding: 14px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+          <div id="cardFormTitle" style="font-size: 0.8rem; font-weight: 800; color: #047857; margin-bottom: 8px;">💳 Debit Card Details</div>
+          
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px;">
+            <div style="grid-column: span 3;">
+              <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Cardholder Name</label>
+              <input type="text" id="cardHolderInput" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px; background: white;" value="Alex Sharma" placeholder="Name on card">
+            </div>
+
+            <div style="grid-column: span 3;">
+              <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Card Number</label>
+              <input type="text" id="cardNumberInput" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px; background: white;" value="4532 8892 1042 8892" placeholder="4532 0000 0000 8892">
+            </div>
+
+            <div>
+              <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Expires</label>
+              <input type="text" id="cardExpiryInput" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px; background: white;" value="08/28" placeholder="MM/YY">
+            </div>
+
+            <div>
+              <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">CVV</label>
+              <input type="password" id="cardCvvInput" maxLength="4" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px; background: white;" value="888" placeholder="•••">
+            </div>
+          </div>
+        </div>
+
+        <!-- Cash Form -->
+        <div id="codForm" class="hidden" style="background: #f8fafc; padding: 14px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 16px; font-size: 0.85rem;">
+          <div style="font-weight: 800; color: #0f172a; margin-bottom: 6px;">💵 Pay Cash on Delivery</div>
+          <div style="font-size: 0.75rem; color: #64748b; margin-bottom: 8px;">Pay cash or scan QR code on delivery partner arrival.</div>
+          
+          <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Cash Preference</label>
+          <select id="codTenderSelect" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid #cbd5e1; margin-top: 4px; font-weight: 600; background: white;">
+            <option value="exact">I will provide exact cash</option>
+            <option value="change500">I need change for ₹500 bill</option>
+            <option value="change2000">I need change for ₹2000 bill</option>
+            <option value="qr">I will pay via UPI QR to delivery agent</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+          <button style="padding: 12px 20px; background: #f1f5f9; border-radius: 10px; font-weight: 700;" id="chkBackToStep2">Back</button>
+          <button class="checkout-btn" style="flex:1; margin:0;" id="placeOrderFinalBtn">Pay & Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE ORDER STATUS TRACKER MODAL -->
+  <div class="modal-overlay hidden" id="orderTrackerOverlay">
+    <div class="modal-box" style="max-width: 580px;">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">
+            Live Order Tracker <span id="trackerOrderId" style="background: #ecfdf5; color: #047857; font-size: 0.8rem; padding: 2px 8px; border-radius: 99px;">ORD-8942</span>
+          </div>
+          <div style="font-size: 0.8rem; color: #64748b;" id="trackerSlotText">Time Slot: Express 30-Min</div>
+        </div>
+        <button class="close-btn" id="closeTrackerBtn">✕</button>
+      </div>
+
+      <!-- Tracker Timeline -->
+      <div style="background: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #e2e8f0; margin-bottom: 16px;">
+        <div style="display: flex; justify-content: space-between; position: relative; margin: 10px 0 20px 0;">
+          <div style="position: absolute; top: 18px; left: 10%; right: 10%; height: 4px; background: #e2e8f0; z-index: 1;">
+            <div id="trackerProgressFill" style="height: 100%; background: #10b981; width: 33%; transition: width 0.5s ease;"></div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; align-items: center; z-index: 2;" id="nodePending">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #10b981; color: white; display: flex; align-items: center; justify-content: center;">⏱️</div>
+            <div style="font-size: 0.75rem; font-weight: 700; margin-top: 6px;">Pending</div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; z-index: 2;" id="nodePacking">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; color: #64748b; display: flex; align-items: center; justify-content: center;">📦</div>
+            <div style="font-size: 0.75rem; font-weight: 700; margin-top: 6px;">Packing</div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; z-index: 2;" id="nodeOut">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; color: #64748b; display: flex; align-items: center; justify-content: center;">🚚</div>
+            <div style="font-size: 0.75rem; font-weight: 700; margin-top: 6px;">Out for Delivery</div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; z-index: 2;" id="nodeDelivered">
+            <div style="width: 36px; height: 36px; border-radius: 50%; background: #e2e8f0; color: #64748b; display: flex; align-items: center; justify-content: center;">🏠</div>
+            <div style="font-size: 0.75rem; font-weight: 700; margin-top: 6px;">Delivered</div>
+          </div>
+        </div>
+
+        <div style="text-align: center; font-size: 0.85rem; color: #047857; font-weight: 700; padding: 8px; background: #ecfdf5; border-radius: 8px;" id="trackerStatusMsg">
+          ⚡ Status: Order is packed & being dispatched!
+        </div>
+      </div>
+
+      <div style="font-size: 0.85rem;" id="trackerOrderDetails">
+        <!-- Injected by JS -->
+      </div>
+
+      <button class="checkout-btn" id="closeTrackerFinalBtn" style="margin-top: 16px;">Back to Shopping</button>
+    </div>
+  </div>
+
+  <!-- PRODUCT DETAIL MODAL -->
+  <div class="modal-overlay hidden" id="productDetailOverlay">
+    <div class="modal-box" style="max-width: 620px;">
+      <div class="modal-header">
+        <div id="modalCategoryLbl" style="font-size: 0.8rem; color: #64748b; text-transform: uppercase; font-weight: 700;">
+          FRESH PRODUCE
+        </div>
+        <button class="close-btn" id="closeDetailBtn">✕</button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+        <div style="border-radius: 12px; overflow: hidden; height: 220px; background: #f1f5f9;">
+          <img id="detailImg" src="" alt="" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+
+        <div>
+          <h2 id="detailTitle" style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;"></h2>
+          <div style="font-size: 0.85rem; color: #f59e0b; font-weight: 700; margin-bottom: 8px;" id="detailRating">★ 4.8</div>
+          <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 12px;">
+            <span id="detailPrice" style="font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800;"></span>
+            <span id="detailUnit" style="font-size: 0.85rem; color: #64748b;"></span>
+          </div>
+
+          <div id="detailDietaryContainer" style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 16px;"></div>
+
+          <button class="checkout-btn" id="detailAddToCartBtn">Add to Cart</button>
+        </div>
+      </div>
+
+      <div style="border-top: 1px solid #e2e8f0; padding-top: 14px;">
+        <h4 style="font-weight: 700; font-size: 0.9rem; margin-bottom: 4px;">Description</h4>
+        <p id="detailDesc" style="font-size: 0.85rem; color: #475569;"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- AUTH MODAL -->
+  <div class="modal-overlay hidden" id="authModalOverlay">
+    <div class="modal-box" style="max-width: 400px;">
+      <div class="modal-header">
+        <div class="modal-title">My Account</div>
+        <button class="close-btn" id="closeAuthBtn">✕</button>
+      </div>
+
+      <div style="text-align: center; padding: 10px 0;">
+        <div style="width: 64px; height: 64px; border-radius: 50%; background: #ecfdf5; color: #10b981; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px auto; font-size: 1.8rem;">
+          👤
+        </div>
+        <h3 style="font-weight: 800; font-size: 1.2rem; color: #0f172a;">Alex Sharma</h3>
+        <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px;">alex.sharma@example.com</p>
+
+        <div style="background: #f8fafc; padding: 12px; border-radius: 10px; text-align: left; font-size: 0.8rem; margin-bottom: 20px;">
+          <div><strong>Default Address:</strong> MG Road, Indiranagar, Bengaluru</div>
+          <div><strong>Saved Phone:</strong> +91 98765 43210</div>
+        </div>
+
+        <button class="checkout-btn" id="closeAuthFinalBtn">Saved & Logged In</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD PRODUCT MODAL FOR ADMIN -->
+  <div class="modal-overlay hidden" id="addProductModalOverlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-title">Add New Product to Catalog</div>
+        <button class="close-btn" id="closeAddProductBtn">✕</button>
+      </div>
+
+      <form id="addProductForm" style="display: flex; flex-direction: column; gap: 12px;">
+        <div>
+          <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Product Name</label>
+          <input type="text" id="newProdName" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px;" required placeholder="e.g. Fresh Paneer 200g">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Category</label>
+            <select id="newProdCat" class="sort-select" style="width: 100%; margin-top: 4px;">
+              <option value="produce">Fresh Produce</option>
+              <option value="dairy">Dairy & Eggs</option>
+              <option value="bakery">Bakery</option>
+              <option value="pantry">Pantry & Staples</option>
+              <option value="beverages">Beverages</option>
+              <option value="household">Household Essentials</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Price (₹)</label>
+            <input type="number" step="1" id="newProdPrice" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px;" required placeholder="99">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Unit</label>
+            <input type="text" id="newProdUnit" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px;" value="per kg">
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Initial Stock</label>
+            <input type="number" id="newProdStock" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px;" value="25">
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size: 0.75rem; font-weight: 700; color: #64748b;">Image URL</label>
+          <input type="text" id="newProdImage" class="search-input" style="border-radius: 8px; padding-left: 12px; margin-top: 4px;" value="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80">
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px; margin: 6px 0;">
+          <input type="checkbox" id="newProdOrganic">
+          <label for="newProdOrganic" style="font-size: 0.85rem; font-weight: 700; color: #15803d;">🌿 Certified Organic Product</label>
+        </div>
+
+        <button type="submit" class="checkout-btn" style="margin-top: 8px;">Save Product to Catalog</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM NAVIGATION BAR -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" id="mobNavShop">
+      <span>🛍️ Shop</span>
+    </button>
+    <button class="mobile-nav-item" id="mobNavCart">
+      <span>🛒 Cart (<span id="mobCartBadge">0</span>)</span>
+    </button>
+    <button class="mobile-nav-item" id="mobNavTracker">
+      <span>⏱️ Tracker</span>
+    </button>
+    <button class="mobile-nav-item" id="mobNavAdmin">
+      <span>⚙️ Admin</span>
+    </button>
+  </nav>
+
+  <!-- React Application Mount Point -->
+  <div id="root"></div>
+
+  <!-- Load Main Application Script -->
+  <script type="module" src="app.js"></script>
+  <script type="module" src="/src/main.jsx"></script>
+  <script>
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>
